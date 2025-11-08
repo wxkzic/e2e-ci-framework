@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "pretest": "node -e \"require('fs').mkdirSync('reports/ui',{recursive:true});require('fs').mkdirSync('reports/api',{recursive:true});require('fs').mkdirSync('setup/storageState',{recursive:true})\"",
-    "test:ui": "playwright test --reporter=html && npx playwright show-report reports/ui",
+    "test:ui": "playwright test --reporter=html",
     "test:ui:headed": "playwright test --headed --reporter=list",
     "report:ui": "npx playwright show-report",
     "test:api": "newman run collections/jsonplaceholder_collection.json -r cli,htmlextra --reporter-htmlextra-export ./reports/api/newman.html",
