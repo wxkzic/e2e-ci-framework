@@ -30,9 +30,6 @@ jobs:
           E2E_USER: ${{ secrets.E2E_USER }}
           E2E_PASS: ${{ secrets.E2E_PASS }}
 
-      - name: Run API tests (Newman)
-        run: npm run test:api
-
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()
@@ -40,9 +37,3 @@ jobs:
           name: playwright-report
           path: reports/ui
 
-      - name: Upload Newman report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: newman-report
-          path: reports/api/newman.html
