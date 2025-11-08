@@ -1,0 +1,7 @@
+node_modules
+dist
+reports
+.playwright
+test-results
+setup/storageState/*.json
+.env

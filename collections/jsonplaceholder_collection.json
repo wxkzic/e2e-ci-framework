@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "ecacd9c8-add7-4186-86da-7ba0d169fa1a",
+		"name": "jsonplaceholder_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49208323",
+		"_collection_link": "https://vintoniuk-illia-1880776.postman.co/workspace/illia-Vintoniuk's-Workspace~82a44729-9676-4c88-8d16-7c484887d224/collection/49208323-ecacd9c8-add7-4186-86da-7ba0d169fa1a?action=share&source=collection_link&creator=49208323"
+	},
+	"item": [
+		{
+			"name": "Create Post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status is 201', () => pm.response.to.have.status(201));",
+							"pm.test('Is JSON', () => pm.response.to.be.json);",
+							"",
+							"const json = pm.response.json();",
+							"pm.test('Has id', () => pm.expect(json.id).to.exist);",
+							"",
+							"pm.test('postId saved', () => pm.expect(pm.collectionVariables.get('postId')).to.exist);",
+							"pm.collectionVariables.set(\"postId\", \"1\"); "
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"title\": \"QA Test\", \"body\": \"Test content\", \"userId\": 1 }"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const id = pm.collectionVariables.get('postId');",
+							"pm.expect(id, \"postId is missing — run Create Post first\").to.be.ok;",
+							"",
+							"pm.variables.set(\"id\", id);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Is JSON\", () => {",
+							"  const ct = pm.response.headers.get(\"content-type\") || pm.response.headers.get(\"Content-Type\");",
+							"  pm.expect(ct, \"content-type header\").to.be.ok;",
+							"  pm.expect(ct).to.include(\"application/json\");",
+							"});",
+							"",
+							"const ct = pm.response.headers.get(\"content-type\") || pm.response.headers.get(\"Content-Type\");",
+							"let json = null;",
+							"let isJson = false;",
+							"if (ct && ct.includes(\"application/json\")) {",
+							"  try {",
+							"    json = pm.response.json();",
+							"    isJson = true;",
+							"  } catch (e) {",
+							"    isJson = false;",
+							"  }",
+							"}",
+							"",
+							"pm.test(\"updated id matches (if JSON)\", () => {",
+							"  if (!isJson) {",
+							"    pm.expect.fail(\"Response is not valid JSON, so cannot check id match.\");",
+							"    return;",
+							"  }",
+							"  const savedId = pm.collectionVariables.get('postId');",
+							"  pm.expect(savedId, \"collection variable postId must be set\").to.be.ok;",
+							"  pm.expect(json, \"Response is not JSON\").to.be.an(\"object\");",
+							"  pm.expect(String(json.id)).to.eql(savedId);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"id\": {{postId}}, \"title\": \"Updated Title\", \"body\": \"Updated content\", \"userId\": 1 }"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{postId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"{{postId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const id = pm.collectionVariables.get('postId');",
+							"if (!id) { throw new Error('postId is not set. Run Create/Update first.'); }"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status is 200', () => pm.response.to.have.status(200));",
+							"pm.test('Is JSON', () => pm.response.to.be.json);",
+							"pm.test('Empty object returned', () => pm.expect(pm.response.json()).to.eql({}));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{postId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"{{postId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://jsonplaceholder.typicode.com"
+		},
+		{
+			"key": "postId",
+			"value": ""
+		}
+	]
+}

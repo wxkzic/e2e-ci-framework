@@ -1,0 +1,28 @@
+{
+  "name": "e2e-ci-framework",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pretest": "node -e \"require('fs').mkdirSync('reports/ui',{recursive:true});require('fs').mkdirSync('reports/api',{recursive:true});require('fs').mkdirSync('setup/storageState',{recursive:true})\"",
+    "test:ui": "playwright test --reporter=html && npx playwright show-report reports/ui",
+    "test:ui:headed": "playwright test --headed --reporter=list",
+    "report:ui": "npx playwright show-report",
+    "test:api": "newman run collections/jsonplaceholder_collection.json -r cli,htmlextra --reporter-htmlextra-export ./reports/api/newman.html",
+    "report:api": "node -e \"require('child_process').exec(process.platform==='win32'?'start reports\\\\api\\\\newman.html':(process.platform==='darwin'?'open reports/api/newman.html':'xdg-open reports/api/newman.html'))\"",
+    "format": "prettier -w .",
+    "lint": "eslint . --ext .ts",
+    "ci:all": "npm run test:ui && npm run test:api"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "dotenv": "^16.4.0",
+    "eslint": "^8.57.0",
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1",
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}

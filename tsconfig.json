@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "types": ["node", "@playwright/test"],
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "include": ["tests", "pages", "utils", "services", "setup", "playwright.config.ts"]
+}
